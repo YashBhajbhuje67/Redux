@@ -1,11 +1,14 @@
 import React from 'react'
-import { View } from 'react-native'
+import { Text, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 const Display = () => {
   return (
-    <View>
+    <SafeAreaView>
+      <Text>** Your Entered Data **</Text>
+
       
-    </View>  
+    </SafeAreaView>
   )
 }
 
