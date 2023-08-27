@@ -1,39 +1,27 @@
 import React, {useState} from 'react';
-import {Button, Text, TextInput, View} from 'react-native';
+import {Button, StyleSheet, Text, TextInput, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import {connect} from 'react-redux';
+import {updateFormData} from './store/actions';
 
-const LoginPage = () => {
-  const [formData, setFormData] = useState({
-    f_name: '',
-    l_name: '',
-    email: '',
-    ph_no: '',
-  });
-  const navigation  = useNavigation();
+const LoginPage = ({updateFormData, navigation}) => {
   const handleEnteredValue = (key: string, value: string) => {
-    setFormData({
-      ...formData,
-      [key]: value,
-    });
+    updateFormData(key, value);
   };
 
   const handleSubmit = () => {
-    console.log(formData);
     navigation.navigate('Response');
   };
 
   return (
-    <SafeAreaView style={{flexDirection: 'column', gap: 6, margin: 12}}>
-      <Text style={{textAlign: 'center', fontSize: 30, marginBottom: 20}}>
-        Welcome
-      </Text>
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.header}>Welcome</Text>
 
-      <View style={{flexDirection: 'row', gap: 40}}>
+      <View style={styles.contain}>
         <View style={{flex: 1}}>
-          <Text>First Name: </Text>
+          <Text style={{fontSize: 18}}>First Name: </Text>
           <TextInput
-            style={{height: 35, borderBottomWidth: 1}}
+            style={styles.input}
             placeholder="John"
             onChangeText={value => {
               handleEnteredValue('f_name', value);
@@ -42,9 +30,9 @@ const LoginPage = () => {
         </View>
 
         <View style={{flex: 1}}>
-          <Text>Last Name: </Text>
+          <Text style={{fontSize: 18}}>Last Name: </Text>
           <TextInput
-            style={{height: 35, borderBottomWidth: 1}}
+            style={styles.input}
             placeholder="Wick"
             onChangeText={value => {
               handleEnteredValue('l_name', value);
@@ -53,10 +41,10 @@ const LoginPage = () => {
         </View>
       </View>
 
-      <View style={{flexDirection: 'row', alignItems: 'center', gap: 20}}>
-        <Text>Email:</Text>
+      <View style={styles.bottomContain}>
+        <Text style={{fontSize: 18}}>Email:</Text>
         <TextInput
-          style={{height: 35, flex: 1, borderBottomWidth: 1}}
+          style={{flex: 1, ...styles.input}}
           placeholder="abc@email.com"
           keyboardType="email-address"
           onChangeText={value => {
@@ -65,22 +53,45 @@ const LoginPage = () => {
         />
       </View>
 
-      <View style={{flexDirection: 'row', alignItems: 'center', gap: 20}}>
-        <Text>Phone No.: </Text>
+      <View style={styles.bottomContain}>
+        <Text style={{fontSize: 18}}>Phone No.: </Text>
         <TextInput
-          style={{height: 35, flex: 1, borderBottomWidth: 1}}
+          style={{flex: 1, ...styles.input}}
           placeholder="Enter 10 digit number"
+          keyboardType="phone-pad"
           onChangeText={value => {
             handleEnteredValue('ph_no', value);
           }}
         />
       </View>
 
-      <View style={{marginTop: 20, marginHorizontal: 80}}>
+      <View style={styles.button}>
         <Button title="Submit" onPress={handleSubmit} />
       </View>
     </SafeAreaView>
   );
 };
 
-export default LoginPage;
+const mapStateToProps = (state: {formData: any}) => ({
+  formData: state.formData,
+});
+
+const mapDispatchToProps = {
+  updateFormData,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);
+
+const styles = StyleSheet.create({
+  container: {flexDirection: 'column', gap: 6, margin: 12},
+  header: {textAlign: 'center', fontSize: 30, marginBottom: 20},
+  contain: {flexDirection: 'row', gap: 40, marginBottom: 12},
+  input: {height: 40, borderBottomWidth: 1, fontSize: 15},
+  bottomContain: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 20,
+    marginBottom: 12,
+  },
+  button: {marginTop: 10, marginHorizontal: 80},
+});
